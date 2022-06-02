@@ -7,6 +7,7 @@ from torchvision import datasets, transforms, models
 from torchsummary import summary
 import numpy as np
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class combinedModel(nn.Module):
     def __init__(self, input_size=(3, 128, 128), output_size=(3, 64, 64)):
@@ -37,8 +38,14 @@ class combinedModel(nn.Module):
         pass
 
     def generate_CNN_encoder(self, input_size):
+        #input_size = input_size.cuda()
         rnxt50 = models.resnext50_32x4d(pretrained=True)
-        summary(rnxt50, (input_size))
+        #print(rnxt50)
+        idx = 0
+        for name, param in rnxt50.named_parameters():
+            print(idx, ':', name, param.size())
+            idx += 1
+        #summary(rnxt50, input_size.to(device))
 
         return rnxt50
 
